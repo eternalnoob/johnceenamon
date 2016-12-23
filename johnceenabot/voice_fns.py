@@ -25,20 +25,19 @@ class MusicBox(object):
 
 
 ourbox = MusicBox()
+
 @bot.command(pass_context=True)
 async def cena(ctx):
     print(ctx)
     ended = asyncio.Event()
-    #discord.opus.load_opus('opus')
     voice_logger.info('trying to join channel')
     if ctx.message.author.voice_channel is not None:
-        print(bot)
         voicechn = await bot.join_voice_channel(ctx.message.author.voice_channel)
         ourbox.ended = asyncio.Event()
-        player = voicechn.create_ffmpeg_player('johnceenabot/audio/invisible.mp3', after=ourbox.stop_player)
+        player = voicechn.create_ffmpeg_player('johnceenabot/audio/invisible.mp3',
+                                               after=ourbox.stop_player)
         player.start()
         await ourbox.ended.wait()
         await voicechn.disconnect()
     else:
         voice_logger.warning('user is not in a channel!')
-        print('shit')

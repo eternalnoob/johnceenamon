@@ -5,7 +5,7 @@ from johnceenabot.settings import Config
 import os
 
 from johnceenabot.utils import bot
-from johnceenabot import voice_fns
+from johnceenabot import voice_fns, text_memers
 
 @bot.event
 async def on_ready():

@@ -3,3 +3,5 @@
 *.pyc
 __pycache__
 *.mp3
+transcripts.txt
+munroe_chains.json
