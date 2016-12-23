@@ -1,1 +1,5 @@
 .idea
+*.log
+*.pyc
+__pycache__
+*.mp3
