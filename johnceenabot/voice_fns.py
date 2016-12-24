@@ -49,11 +49,25 @@ async def playmp3(voicechn, mp3_path):
     await ourbox.ended.wait()
     await voicechn.disconnect()
 
-@bot.command(pass_context=True)
-async def cena(ctx):
-    await connect_voice(ctx, 'johnceenabot/audio/invisible.mp3')
+
+@bot.command()
+async def cena():
+    await bot.makemp3player('johnceenabot/audio/invisible.mp3')
+
+@bot.command()
+async def nash():
+    await bot.makemp3player('johnceenabot/audio/vape-nation.mp3')
 
 @bot.command(pass_context=True)
-async def nash(ctx):
-    await connect_voice(ctx, 'johnceenabot/audio/vape-nation.mp3')
+async def desummon(ctx):
+    await bot.desummon(ctx)
+
+@bot.command(pass_context=True)
+async def summon(ctx):
+    await bot.summon(ctx)
+
+@bot.command()
+async def play():
+    await bot.start_loop()
+
 
