@@ -26,18 +26,34 @@ class MusicBox(object):
 
 ourbox = MusicBox()
 
+
+
+async def connect_voice(ctx, mp3_path):
+    ourbox.ended = asyncio.Event()
+    voice_logger.info('trying to join channel')
+    try:
+        if ctx.message.author.voice_channel is not None:
+            voicechn = await bot.join_voice_channel(ctx.message.author.voice_channel)
+            await playmp3(voicechn, mp3_path)
+        else:
+            voice_logger.warning('user is not in a channel!')
+            await bot.say('Can\'t ceema to figure out what\'s wrong (not in voice channel)')
+    except AttributeError:
+        await bot.say('Can\'t Play!')
+
+async def playmp3(voicechn, mp3_path):
+    ourbox.ended = asyncio.Event()
+    player = voicechn.create_ffmpeg_player(mp3_path,
+                                           after=ourbox.stop_player)
+    player.start()
+    await ourbox.ended.wait()
+    await voicechn.disconnect()
+
 @bot.command(pass_context=True)
 async def cena(ctx):
-    print(ctx)
-    ended = asyncio.Event()
-    voice_logger.info('trying to join channel')
-    if ctx.message.author.voice_channel is not None:
-        voicechn = await bot.join_voice_channel(ctx.message.author.voice_channel)
-        ourbox.ended = asyncio.Event()
-        player = voicechn.create_ffmpeg_player('johnceenabot/audio/invisible.mp3',
-                                               after=ourbox.stop_player)
-        player.start()
-        await ourbox.ended.wait()
-        await voicechn.disconnect()
-    else:
-        voice_logger.warning('user is not in a channel!')
+    await connect_voice(ctx, 'johnceenabot/audio/invisible.mp3')
+
+@bot.command(pass_context=True)
+async def nash(ctx):
+    await connect_voice(ctx, 'johnceenabot/audio/vape-nation.mp3')
+

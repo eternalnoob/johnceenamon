@@ -6,6 +6,7 @@ import os
 
 from johnceenabot.utils import bot
 from johnceenabot import voice_fns, text_memers
+import ast
 
 @bot.event
 async def on_ready():
@@ -24,6 +25,8 @@ async def roll(dice : str):
     """Rolls a dice in NdN format."""
     try:
         rolls, limit = map(int, dice.split('d'))
+            
+
     except Exception:
         await bot.say('Format has to be in NdN!')
         return
@@ -31,6 +34,7 @@ async def roll(dice : str):
     rollsults = [random.randint(1, limit) for r in range(rolls)]
     result = ', '.join(map(str, rollsults)) + '\nTotal: {}'.format(sum(rollsults))
     await bot.say(result)
+
 
 @bot.command(description='For when you wanna settle the score some other way')
 async def choose(*choices : str):
