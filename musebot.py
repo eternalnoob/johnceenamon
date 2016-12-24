@@ -28,13 +28,13 @@ class MusicBox(object):
         print('x)')
         if self.ended.is_set():
             print('y')
-            if not self.queue.empty():
-                self.player = await self.queue.get()
-                await self.say(str(self.player))
-                self.player.start()
-                self.ended.clear()
-            else:
-                print('hmmmm')
+            self.player = await self.queue.get()
+            await self.say(str(self.player.volume))
+            await self.say(str(self.player))
+            self.player.volume = .01
+            await self.say(str(self.player.volume))
+            self.player.start()
+            self.ended.clear()
 
     async def start_loop(self):
         await self.player_check()
@@ -51,10 +51,6 @@ class MusicBox(object):
             self.player.stop()
             voice_logger.info('Player stopped')
         self.ended.set()
-        self.check_quit()
-
-
-
 
     async def add_song(self, player):
         await self.queue.put(player)

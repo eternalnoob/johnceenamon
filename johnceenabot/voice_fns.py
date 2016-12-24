@@ -40,8 +40,3 @@ async def addtube(ctx):
         await bot.makeytplayer(URL)
     except Exception:
         await bot.say('u suck at URL, kid')
-
-
-
-
-
