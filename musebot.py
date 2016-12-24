@@ -29,15 +29,10 @@ class MusicBox(object):
         if self.ended.is_set():
             print('y')
             if not self.queue.empty():
-                print('z')
-                try:
-                    self.player = self.queue.get_nowait()
-                    await self.say(str(self.player))
-                    self.player.start()
-                    self.ended.clear()
-                except QueueEmpty:
-                    await self.say('wtf')
-                    await self.say(str(self.player))
+                self.player = await self.queue.get()
+                await self.say(str(self.player))
+                self.player.start()
+                self.ended.clear()
             else:
                 print('hmmmm')
 
@@ -57,6 +52,9 @@ class MusicBox(object):
             voice_logger.info('Player stopped')
         self.ended.set()
         self.check_quit()
+
+
+
 
     async def add_song(self, player):
         await self.queue.put(player)
@@ -99,6 +97,6 @@ class MuseBot(Bot, MusicBox):
 
     async def makeytplayer(self, yt_path):
         if self.inChannel.is_set():
-            await self.add_song(await self.voice_channel.create_ytdl_player(yt_path,
-                                                                      after=self.stop_player))
-
+            player = await self.voice_channel.create_ytdl_player(yt_path,
+                                                                 after=self.stop_player)
+            await self.add_song(player)
