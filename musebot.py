@@ -3,7 +3,7 @@ from discord.ext.commands import Bot
 import logging
 import asyncio
 
-from asyncio import Queue
+from asyncio import Queue, QueueEmpty
 
 voice_logger = logging.getLogger('voice')
 
@@ -18,18 +18,26 @@ class MusicBox(object):
         self.player = None
         self.ended = asyncio.Event()
         self.queue = Queue()
+        self.ended.set()
 
 
 
     # utilities for creating and setting up different player types
     # self.ended will be used as the await for trying to get the next song
     async def player_check(self):
+        print('x)')
         if self.ended.is_set():
+            print('y')
             if not self.queue.empty():
-                self.player = await self.queue.get()
-                await self.say(self.player.)
-                self.player.start()
-                self.ended.clear()
+                print('z')
+                try:
+                    self.player = self.queue.get_nowait()
+                    await self.say(str(self.player))
+                    self.player.start()
+                    self.ended.clear()
+                except QueueEmpty:
+                    await self.say('wtf')
+                    await self.say(str(self.player))
             else:
                 print('hmmmm')
 
@@ -37,7 +45,7 @@ class MusicBox(object):
         await self.player_check()
 
 
-    async def stop_player(self):
+    def stop_player(self):
         """
         used to both stop player at end of player completion as well
         as on user command
@@ -54,7 +62,7 @@ class MusicBox(object):
         await self.queue.put(player)
 
     async def add_mp3(self, player):
-         self.queue.put_nowait(player)
+         await self.queue.put(player)
 
 
 

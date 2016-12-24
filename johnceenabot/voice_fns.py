@@ -67,6 +67,10 @@ async def summon(ctx):
     await bot.summon(ctx)
 
 @bot.command()
+async def getit():
+    await bot.makeytplayer('https://www.youtube.com/watch?v=PfYnvDL0Qcw')
+
+@bot.command()
 async def play():
     await bot.start_loop()
 
