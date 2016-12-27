@@ -61,6 +61,8 @@ class MusicBox(object):
 
     async def setvol(self, vol):
         self.volume = vol
+        if self.player is not None:
+            self.player.volume = vol
 
 
 
