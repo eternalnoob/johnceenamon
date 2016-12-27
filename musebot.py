@@ -19,6 +19,7 @@ class MusicBox(object):
         self.ended = asyncio.Event()
         self.queue = Queue()
         self.ended.set()
+        self.volume = .5
 
 
 
@@ -31,7 +32,7 @@ class MusicBox(object):
             self.player = await self.queue.get()
             await self.say(str(self.player.volume))
             await self.say(str(self.player))
-            self.player.volume = .01
+            self.player.volume = self.volume
             await self.say(str(self.player.volume))
             self.player.start()
             self.ended.clear()
@@ -57,6 +58,9 @@ class MusicBox(object):
 
     async def add_mp3(self, player):
          await self.queue.put(player)
+
+    async def setvol(self, vol):
+        self.volume = vol
 
 
 

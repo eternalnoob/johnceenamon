@@ -30,8 +30,16 @@ async def reallygetit():
     await bot.makeytplayer('https://www.youtube.com/watch?v=vkOJ9uNj9EY')
 
 @bot.command()
+async def mondaymitts():
+    await bot.makeytplayer('https://www.youtube.com/watch?v=_ykAXB3JFy4')
+
+@bot.command()
 async def play():
     await bot.start_loop()
+
+@bot.command()
+async def stop():
+    bot.stop_player()
 
 @bot.command(pass_context=True)
 async def addtube(ctx):
@@ -40,3 +48,16 @@ async def addtube(ctx):
         await bot.makeytplayer(URL)
     except Exception:
         await bot.say('u suck at URL, kid')
+
+@bot.command(pass_context=True)
+async def changevol(ctx):
+    try:
+        volume = ctx.message.content.split(' ')[1]
+        await bot.setvol(float(volume))
+    except Exception:
+        await bot.say('u suck at volumes, kid')
+
+@bot.command()
+async def areuok():
+    await bot.say('I feel . . . pain')
+
