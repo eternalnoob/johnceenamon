@@ -12,9 +12,31 @@ with open('munroe_chains.json', mode='r') as f:
     contents = f.read()
     markov = markovify.Text.from_json(contents)
 
+with open('horror_chains.json', mode='r') as f:
+    contents = f.read()
+    horror_markov = markovify.Text.from_json(contents)
+
+@bot.command()
+async def greyfacefromspace():
+    sentence = horror_markov.make_sentence()
+    await sayitall(sentence)
+
+@bot.command(pass_context=True)
+async def tellmeastory(ctx):
+    try:
+        sentence = horror_markov.make_sentence_with_start(' '.join(ctx.message.content.split(' ')[1:]))
+        await sayitall(sentence)
+    except:
+        await bot.say("lol I can't tho")
+
 @bot.command()
 async def noneroe():
+    sentence = markov.make_sentence()
+    await sayitall(sentence)
 
-    await bot.say(markov.make_sentence())
+async def sayitall(sentence):
+    await bot.saytext(sentence)
+    await bot.say(sentence)
+
 
 

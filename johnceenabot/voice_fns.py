@@ -7,7 +7,9 @@ import asyncio
 
 @bot.command()
 async def cena():
+    """:trumpet::trumpet::trumpet::trumpet:"""
     await bot.makemp3player('johnceenabot/audio/invisible.mp3')
+    await bot.say(":trumpet::trumpet::trumpet:")
 
 @bot.command()
 async def nash():
@@ -34,6 +36,10 @@ async def mondaymitts():
     await bot.makeytplayer('https://www.youtube.com/watch?v=_ykAXB3JFy4')
 
 @bot.command()
+async def dmrainbow():
+    await bot.makeytplayer('https://www.youtube.com/watch?v=OchyYnlHTdo')
+
+@bot.command()
 async def play():
     await bot.start_loop()
 
@@ -46,14 +52,20 @@ async def addtube(ctx):
     try:
         URL = ctx.message.content.split(' ')[1]
         await bot.makeytplayer(URL)
-    except Exception:
+    except:
         await bot.say('u suck at URL, kid')
 
-@bot.command(pass_context=True)
-async def changevol(ctx):
+@bot.command()
+async def changevol( volume : float ):
     try:
-        volume = ctx.message.content.split(' ')[1]
-        await bot.setvol(float(volume))
+        await bot.setvol(volume)
+    except Exception:
+        await bot.say('u suck at volumes, kid')
+
+@bot.command()
+async def vol( volume : float ):
+    try:
+        await bot.setvol(volume)
     except Exception:
         await bot.say('u suck at volumes, kid')
 
