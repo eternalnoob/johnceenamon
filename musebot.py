@@ -42,7 +42,6 @@ class MusicBox(object):
     async def start_loop(self):
         await self.player_check()
 
-
     def stop_player(self):
         """
         used to both stop player at end of player completion as well
@@ -55,22 +54,6 @@ class MusicBox(object):
             voice_logger.info('Player stopped')
         self.ended.set()
 
-    def stop_saytext(self):
-        if self.player and self.player.is_playing():
-            if len(self.interrupted) > 0:
-                self.player = self.interrupted.pop(len(self.interrupted)-1)
-                self.player.start()
-
-    async def saytext(self, text):
-        tts = gTTS(text=text,lang='en')
-        filename = 'mp3/' + text.split(' ')[0] +'.mp3'
-        file = tts.save(savefile=filename)
-        if self.player is not None:
-            self.interrupted.append(self.player)
-            self.player.stop()
-        self.player = self.voice_channel.create_ffmpeg_player(filename,
-                                                         after=self.stop_player)
-        self.player.start()
 
     async def add_song(self, player):
         await self.queue.put(player)
@@ -121,4 +104,21 @@ class MuseBot(Bot, MusicBox):
             player = await self.voice_channel.create_ytdl_player(yt_path,
                                                                  after=self.stop_player)
             await self.add_song(player)
+
+    async def saytext(self, text):
+        tts = gTTS(text=text,lang='en')
+        filename = 'mp3/' + text.split(' ')[0] +'.mp3'
+        file = tts.save(savefile=filename)
+        if self.player is not None:
+            self.interrupted.append(self.player)
+            self.player.pause()
+        self.player = self.voice_channel.create_ffmpeg_player(filename,
+                                                              after=self.stop_saytext)
+        self.player.start()
+
+    def stop_saytext(self):
+        if self.player:
+            if len(self.interrupted) > 0:
+                self.player = self.interrupted.pop(len(self.interrupted)-1)
+                self.player.resume()
 

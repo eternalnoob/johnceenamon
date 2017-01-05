@@ -16,6 +16,10 @@ with open('horror_chains.json', mode='r') as f:
     contents = f.read()
     horror_markov = markovify.Text.from_json(contents)
 
+with open('seinfeldia.json', mode='r') as f:
+    contents = f.read()
+    ree_bees = markovify.Text.from_json(contents)
+
 @bot.command()
 async def greyfacefromspace():
     sentence = horror_markov.make_sentence()
@@ -33,6 +37,27 @@ async def tellmeastory(ctx):
 async def noneroe():
     sentence = markov.make_sentence()
     await sayitall(sentence)
+
+@bot.command()
+async def datbee():
+    sentence = ree_bees.make_sentence()
+    await sayitall(sentence)
+
+@bot.command(pass_context=True)
+async def datbeestory(ctx):
+    try:
+        sentence = ree_bees.make_sentence_with_start(' '.join(ctx.message.content.split(' ')[1:]))
+        await sayitall(sentence)
+    except:
+        await bot.say("lol I can't tho")
+
+@bot.command(pass_context=True)
+async def talkback(ctx):
+    try:
+        sentence = ' '.join(ctx.message.content.split(' ')[1:])
+        await sayitall(sentence)
+    except:
+        await bot.say("lol I can't tho")
 
 async def sayitall(sentence):
     await bot.saytext(sentence)

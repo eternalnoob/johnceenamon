@@ -7,6 +7,10 @@ with open("transcripts.txt") as f:
 
 with open("scury.txt") as f:
     texts.append((f.read(),"horror_chains.json"))
+
+with open("aviation.txt") as f:
+    texts.append((f.read(),"seinfeldia.json"))
+
 # Build the model.
 for text in texts:
     text_model = markovify.Text(text[0], state_size=2)

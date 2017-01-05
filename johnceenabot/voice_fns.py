@@ -12,6 +12,13 @@ async def cena():
     await bot.say(":trumpet::trumpet::trumpet:")
 
 @bot.command()
+async def reallycena():
+    """:trumpet::trumpet::trumpet::trumpet:"""
+    await bot.makeytplayer('https://www.youtube.com/watch?v=wjNtB5g70ic')
+    await bot.say(":trumpet::trumpet::trumpet:")
+    bot.player.start()
+
+@bot.command()
 async def nash():
     await bot.makemp3player('johnceenabot/audio/vape-nation.mp3')
 

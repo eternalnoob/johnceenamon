@@ -4,4 +4,8 @@
 __pycache__
 *.mp3
 transcripts.txt
+aviation.txt
+scury.txt
+seinfeldia.json
+horror_chains.json
 munroe_chains.json
