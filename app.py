@@ -5,7 +5,7 @@ from johnceenabot.settings import Config
 import os
 
 from johnceenabot.utils import bot
-from johnceenabot import voice_fns, text_memers
+from johnceenabot import voice_fns, text_memers, vote_functions
 import ast
 
 @bot.event
@@ -60,10 +60,10 @@ async def cool(ctx):
     if ctx.invoked_subcommand is None:
         await bot.say('No, {0.subcommand_passed} is not cool'.format(ctx))
 
-@cool.command(name='bot')
-async def _bot():
+@cool.command(name='eternalnoob')
+async def _eternalnoob():
     """Is the bot cool?"""
-    await bot.say('Yes, the bot is cool.')
+    await bot.say('Yes, eternalnoob is cool.')
 
 
 print(Config.BOT_USER_TOKEN)

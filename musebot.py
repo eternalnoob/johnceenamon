@@ -3,6 +3,7 @@ from discord.ext.commands import Bot
 import logging
 import asyncio
 from gtts import gTTS
+from strawpoll import StrawPoll
 
 from asyncio import Queue, QueueEmpty
 
@@ -75,6 +76,7 @@ class MuseBot(Bot, MusicBox):
         MusicBox.__init__(self)
         self.voice_channel = None
         self.inChannel = asyncio.Event()
+        self.strawpoll = None
 
 
     async def summon(self, ctx):
@@ -103,22 +105,39 @@ class MuseBot(Bot, MusicBox):
         if self.inChannel.is_set():
             player = await self.voice_channel.create_ytdl_player(yt_path,
                                                                  after=self.stop_player)
-            await self.add_song(player)
+            if 'pink' in player.description.lower() or 'pink' in player.title.lower():
+                await self.say('NICE TRY, KID')
+            else:
+                await self.add_song(player)
 
     async def saytext(self, text):
-        tts = gTTS(text=text,lang='en')
-        filename = 'mp3/' + text.split(' ')[0] +'.mp3'
-        file = tts.save(savefile=filename)
-        if self.player is not None:
-            self.interrupted.append(self.player)
-            self.player.pause()
-        self.player = self.voice_channel.create_ffmpeg_player(filename,
-                                                              after=self.stop_saytext)
-        self.player.start()
+        if self.voice_channel is not None:
+            tts = gTTS(text=text,lang='en')
+            filename = 'mp3/' + text.split(' ')[0] +'.mp3'
+            file = tts.save(savefile=filename)
+            if self.player is not None:
+                self.interrupted.append(self.player)
+                self.player.pause()
+            self.player = self.voice_channel.create_ffmpeg_player(filename,
+                                                                  after=self.stop_saytext)
+            self.player.volume = self.volume
+            self.player.start()
 
     def stop_saytext(self):
         if self.player:
             if len(self.interrupted) > 0:
                 self.player = self.interrupted.pop(len(self.interrupted)-1)
                 self.player.resume()
+
+    async def startvote(self, creator, question):
+        self.strawpoll = StrawPoll(creator, question, superusers=set(['eternalnoob']))
+        await self.saytext('Let\'s Rock the vote!:  ' + question)
+
+
+    async def whowon(self, user):
+        if self.strawpoll is not None and self.strawpoll.canend(user):
+            results, winner = self.strawpoll.tally()
+            await self.saytext(winner + ' Is the winning option for ' + self.strawpoll.question)
+            await self.say(str(results))
+            self.strawpoll = None
 
