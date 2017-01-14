@@ -53,7 +53,17 @@ class MusicBox(object):
             voice_logger.info('Something playing, stopping it')
             self.player.stop()
             voice_logger.info('Player stopped')
-        self.ended.set()
+
+        try:
+            check_next = self.queue.get_nowait()
+            if check_next:
+                self.player = check_next
+                self.player.volume = self.volume
+                self.player.start()
+            else:
+                self.ended.set()
+        except:
+            self.ended.set()
 
 
     async def add_song(self, player):
