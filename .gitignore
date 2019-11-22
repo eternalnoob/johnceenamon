@@ -1,11 +1,12 @@
 .idea
 *.log
 *.pyc
+*.csv
 __pycache__
 *.mp3
 transcripts.txt
 aviation.txt
 scury.txt
-seinfeldia.json
-horror_chains.json
-munroe_chains.json
+chains/
+/.mypy_cache/
+/.pytest_cache/

@@ -8,3 +8,6 @@ Ceenamon also needs to have your discord bots API token stored in the environmen
 There are also mp3s that Ceenamon expects to be there, but in the interests of not distributing those, I'll leave you up to your own devices there.
 
 Ceenamon is in development whenever I can find the time and interest to do it, but if you make the fateful decision to use the unstable product, do it at your own risk.
+
+
+python basic_voice.py

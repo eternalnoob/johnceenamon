@@ -1,0 +1,7 @@
+googletrans
+gtts
+markovify
+youtube-dl
+ipython
+google-cloud-texttospeech
+discord.py[voice]

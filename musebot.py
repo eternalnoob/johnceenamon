@@ -1,9 +1,11 @@
 from discord.ext.commands import Bot
+import discord.ext.commands
 
 import logging
 import asyncio
 from gtts import gTTS
 from strawpoll import StrawPoll
+from discord import Client
 
 from asyncio import Queue, QueueEmpty
 
@@ -78,7 +80,6 @@ class MusicBox(object):
             self.player.volume = vol
 
 
-
 class MuseBot(Bot, MusicBox):
 
     def __init__(self, *args, **kwargs):
@@ -87,57 +88,6 @@ class MuseBot(Bot, MusicBox):
         self.voice_channel = None
         self.inChannel = asyncio.Event()
         self.strawpoll = None
-
-
-    async def summon(self, ctx):
-        if ctx.message.author.voice_channel is not None:
-            self.voice_channel = await self.join_voice_channel(ctx.message.author.voice_channel)
-            self.inChannel.set()
-            await self.say('In there')
-        else:
-            voice_logger.warning('user is not in a channel!')
-            await self.say('Can\'t ceema to figure out what\'s wrong (not in voice channel)')
-
-    async def desummon(self, ctx):
-        if self.inChannel.is_set():
-            await self.voice_channel.disconnect()
-            self.inChannel.clear()
-
-    async def makemp3player(self, mp3_path):
-        if self.inChannel.is_set():
-            player = self.voice_channel.create_ffmpeg_player(mp3_path,
-                                                                  after=self.stop_player)
-            await self.add_mp3(player)
-            await self.say('We ran it alright')
-            await self.say(self.queue.qsize())
-
-    async def makeytplayer(self, yt_path):
-        if self.inChannel.is_set():
-            player = await self.voice_channel.create_ytdl_player(yt_path,
-                                                                 after=self.stop_player)
-            if 'pink' in player.description.lower() or 'pink' in player.title.lower():
-                await self.say('NICE TRY, KID')
-            else:
-                await self.add_song(player)
-
-    async def saytext(self, text):
-        if self.voice_channel is not None:
-            tts = gTTS(text=text,lang='en')
-            filename = 'mp3/' + text.split(' ')[0] +'.mp3'
-            file = tts.save(savefile=filename)
-            if self.player is not None:
-                self.interrupted.append(self.player)
-                self.player.pause()
-            self.player = self.voice_channel.create_ffmpeg_player(filename,
-                                                                  after=self.stop_saytext)
-            self.player.volume = self.volume
-            self.player.start()
-
-    def stop_saytext(self):
-        if self.player:
-            if len(self.interrupted) > 0:
-                self.player = self.interrupted.pop(len(self.interrupted)-1)
-                self.player.resume()
 
     async def startvote(self, creator, question):
         self.strawpoll = StrawPoll(creator, question, superusers=set(['eternalnoob']))
