@@ -134,8 +134,16 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 
 class Music(commands.Cog):
+
+    SUPPORTED_GNDS = {
+        'neutral': texttospeech.enums.SsmlVoiceGender.NEUTRAL,
+        'female': texttospeech.enums.SsmlVoiceGender.FEMALE,
+        'male': texttospeech.enums.SsmlVoiceGender.MALE,
+    }
     def __init__(self, bot):
         self.bot = bot
+        self.gnd = self.SUPPORTED_GNDS['neutral']
+        self.lang_code = 'en-us'
 
     @commands.command()
     async def join(self, ctx, *, channel: discord.VoiceChannel):
@@ -156,11 +164,16 @@ class Music(commands.Cog):
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(content))
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
-    async def saytext(self, ctx, text, lang='en-AU-wavenet-B'):
+    async def saytext(self, ctx, text, lang=None, gnd=None):
+        if not lang:
+            lang = self.lang_code
+        if not gnd:
+            gnd = self.gnd
+
         synthesis_input = texttospeech.types.SynthesisInput(text=text)
         voice = texttospeech.types.VoiceSelectionParams(
             language_code=lang,
-            ssml_gender=texttospeech.enums.SsmlVoiceGender.FEMALE,
+            ssml_gender=gnd,
         )
 
         audio_config = texttospeech.types.AudioConfig(
@@ -170,6 +183,16 @@ class Music(commands.Cog):
         file = open(fname, mode='wb')
         file.write(response.audio_content)
         await self.mp3_pipe(ctx, fname)
+
+    @commands.command()
+    async def changelang(self, ctx, lang: str):
+        self.lang_code = lang
+
+    @commands.command()
+    async def changevoicegnd(self, ctx, gnd: str):
+        assert gnd in self.SUPPORTED_GNDS
+
+        self.gnd = self.SUPPORTED_GNDS[gnd]
 
     @commands.command()
     async def play(self, ctx, *, query):
